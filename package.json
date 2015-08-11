@@ -48,5 +48,6 @@
   },
   "peerDependencies": {
     "hapi": "^8.0.0"
-  }
+  },
+  "main": "lib/index.js"
 }
