@@ -1,6 +1,6 @@
 {
   "name": "hapi-coap-listener",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "CoAP listener for Hapi",
   "license": "MIT",
   "repository": "https://github.com/boneskull/hapi-coap-listener.git",
