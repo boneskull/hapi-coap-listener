@@ -4,7 +4,7 @@ node_js:
 sudo: false
 script: npm test
 after_script:
-- cat ./coverage/lcov.info | ./node_modules/.bin/codeclimate
+- cat ./coverage/lcov.info | ./node_modules/.bin/codeclimate-test-reporter
 env:
   global:
     secure: SUpBGL+qlqQq5YqBxQlwxsAOr1wkvqOTG32gD9b0E9m+Xj9ghFRVoB0VWI+k+7M/e7oPW8QqZIqaB63vLIMnvSckpVhIyYNqUv9oYmDE3Dh7c5AZHxsQg2PiinpXTdvZfBFHVCY/eCDDieSLcbWUrdd+7zoPLCR/ve5hrACxDAeHlkghBM0fmzHqqbXxG5uWLzxv+5k1XJLsRhcBnh2NN0egwOyp3oq5eLS6DxYP8PhfXHREHO8Cz1QLdF2faRelOHEzdHGbXLKIAGnrXpT5acYINEBhxqHYfLkySReWtPcNMgpykvfk7817ACOycFrlb6fdYAFP+Yvd1yeJi64OUGJXBC1fWJeRck4Gix5uU+gvRKGITyftU+x+Fmc4pFA1hPVEORPz63OA5aYVf9Kh2aY6Jc8fWt7CrkUFlstDzpvRNqMLJIH6RlpGMvjWoSRgSp9fHL6NFqmM1trjFiDooanX+F+9Y6j0dbIc2JzKMvnx78AWGupGs8yPttpK2XkvGeSe3Q+/OElDmdK7KECUv2PhWy1peE6AMcGhDnPzOr5AxzVeO1Wk6yxeNmDFyBBQKxUaprERZqKmKWKoEs4MWmij4SAKy0DJUML6FGgkdOO0kczCE1BwmQezYSb0PXJjQ2E7iKNYcqyYCpugPDyBtl38CkrSs45k7LahaMJZa14=
