@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>hapi-coap-listener by boneskull</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/boneskull/hapi-coap-listener">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/boneskull/hapi-coap-listener/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/boneskull/hapi-coap-listener/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>hapi-coap-listener</h1>
+          <p>CoAP listener for Hapi</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/boneskull">boneskull</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a id="hapi-coap-listener-" class="anchor" href="#hapi-coap-listener-" aria-hidden="true"><span class="octicon octicon-link"></span></a>hapi-coap-listener <a href="https://travis-ci.org/boneskull/hapi-coap-listener"><img src="https://travis-ci.org/boneskull/hapi-coap-listener.svg?branch=master" alt="Build Status"></a>
+</h1>
+
+<blockquote>
+<p>CoAP listener for Hapi</p>
+</blockquote>
+
+<h2>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install</h2>
+
+<div class="highlight highlight-shell"><pre>$ npm install hapi-coap-listener</pre></div>
+
+<h2>
+<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h2>
+
+<ul>
+<li>
+<a href="https://iojs.org">io.js</a> &gt;= v2.0.1</li>
+<li>
+<a href="http://hapijs.com">Hapi</a> &gt;= v8.x</li>
+</ul>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<div class="highlight highlight-js"><pre><span class="pl-c">// app.js</span>
+
+<span class="pl-k">let</span> Hapi <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>hapi<span class="pl-pds">'</span></span>);
+
+<span class="pl-c">// add your own defaults here</span>
+<span class="pl-k">let</span> server <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Hapi.Server</span>({
+  connections<span class="pl-k">:</span> {
+    coap<span class="pl-k">:</span> {
+      host<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>localhost<span class="pl-pds">'</span></span>
+    }
+  }
+});
+
+<span class="pl-c">// connection props generated for you include: uri, listener, autoListen (true),</span>
+<span class="pl-c">// and tls (false).  </span>
+<span class="pl-k">let</span> options <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>hapi-coap-listener<span class="pl-pds">'</span></span>)(server, {
+  port<span class="pl-k">:</span> <span class="pl-c1">5693</span>, <span class="pl-c">// this is the port of the CoAP server</span>
+  labels<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>coap<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>on-a-rope<span class="pl-pds">'</span></span>] <span class="pl-c">// default label is 'coap'</span>
+  sock<span class="pl-k">:</span> <span class="pl-c1">null</span> <span class="pl-c">// define a socket path here if you wish; otherwise one is created</span>
+});
+
+server.<span class="pl-c1">connection</span>(options);
+
+server.<span class="pl-c1">route</span>({
+  method<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>GET<span class="pl-pds">'</span></span>,
+  path<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>/<span class="pl-pds">'</span></span>,
+  <span class="pl-en">handler</span><span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">req</span>, <span class="pl-smi">reply</span>) {
+    <span class="pl-c1">reply</span>(<span class="pl-s"><span class="pl-pds">'</span>Hello world!<span class="pl-pds">'</span></span>);
+  })
+});
+
+server.<span class="pl-c1">start</span>(<span class="pl-k">function</span>(<span class="pl-smi">err</span>) {
+  <span class="pl-k">if</span> (err) {
+    <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-en">Error</span>(err);
+  }
+  <span class="pl-en">console</span><span class="pl-c1">.log</span>(<span class="pl-s"><span class="pl-pds">`</span>Hapi listening on <span class="pl-s1"><span class="pl-pse">${</span>server<span class="pl-c1">.info</span>.<span class="pl-c1">uri</span><span class="pl-pse">}</span></span><span class="pl-pds">`</span></span>); 
+});</pre></div>
+
+<p>Try it with <a href="https://www.npmjs.com/package/coap-cli">coap-cli</a>:</p>
+
+<div class="highlight highlight-sh"><pre>$ node /path/to/app.js <span class="pl-c"># start CoAP server</span></pre></div>
+
+<p>In another shell:</p>
+
+<div class="highlight highlight-sh"><pre>$ npm install -g coap-cli
+$ coap get coap://localhost/</pre></div>
+
+<h2>
+<a id="the-hows-and-whys" class="anchor" href="#the-hows-and-whys" aria-hidden="true"><span class="octicon octicon-link"></span></a>The How's and Why's</h2>
+
+<p><a href="https://en.wikipedia.org/wiki/Constrained_Application_Protocol">CoAP</a>, at first glance, is fairly similar to HTTP, with its notion of "options" ("headers"), URL paths and modes.  Seems like a great fit for "web server" frameworks, doesn't it?</p>
+
+<p>Well, yes and no.</p>
+
+<p>The main problem arises from the fact that CoAP is bound to UDP instead of TCP.  This means it has no notion of a <em>connection</em>.  Hapi, and just about any other web server framework you will find, assumes you are listening with an HTTP server for HTTP traffic (if they didn't, they'd suck).  So, a web server will listen for the <code>connection</code> event to determine how to handle requests and responses from a client.  </p>
+
+<p>Without a connection, you can't run a web server.  CoAP has no connections.  This looks grim.</p>
+
+<p>But a cool thing about Hapi (and other frameworks as well, but I like Hapi) is that it gives you some wiggle room.  You can hand it a generic TCP server (think <code>net.Server()</code>) for a listener (see <a href="http://hapijs.com/api#serverconnectionoptions"><code>server.connection()</code></a>).  Even better, it doesn't need to bind to a port of a network interface, and can bind to a UNIX socket (or Windows pipe).  Hapi will listen on that TCP server for HTTP requests and reply with HTTP responses--even if it's listening on some file in <code>/tmp/</code>.  Furthermore, it streamlines "faking" connections with <a href="http://hapijs.com/api#serverinjectoptions-callback"><code>server.inject()</code></a>.</p>
+
+<p>This module gives Hapi a dummy TCP server acting as a proxy to a CoAP server.  Rough flow:</p>
+
+<ol>
+<li>A client requests <code>coap://host:port/some/route</code>
+</li>
+<li>CoAP server injects the request into the TCP server</li>
+<li>Hapi dispatches the request and any routes, handlers, etc. are invoked</li>
+<li>Upon reply, the callback function CoAPifies* the response object, then issues a proper response to the client</li>
+</ol>
+
+<p>What happened to the UNIX socket?  Nothing.  We don't use it.  Then why not just forget about the TCP server, and inject into a HTTP listener?  Loose coupling, mainly--a separate connection allows you to make CoAP- or HTTP-only routes, configuration, or runtime data.  Indeed, as-of-yet unimplemented features (<a href="#roadmap">see below</a>) may further necessitate the schism.  Also, this assumes you're running a HTTP server.</p>
+
+<p>*CoAPification: translating an HTTP request or response into a CoAP request or response, respectively</p>
+
+<h2>
+<a id="roadmap" class="anchor" href="#roadmap" aria-hidden="true"><span class="octicon octicon-link"></span></a>Roadmap</h2>
+
+<p>Currently, this module <strong>does not</strong> support anything beyond basic requests and responses.  So:</p>
+
+<ol>
+<li> <a href="https://github.com/boneskull/hapi-coap-listener/issues/2">Observe mode</a> (multiple responses per request)</li>
+<li> <a href="https://github.com/boneskull/hapi-coap-listener/issues/3">Multicast</a> (possible?  no idea)</li>
+<li> <a href="https://github.com/boneskull/hapi-coap-listener/issues/4">DTLS</a> (probably impossible without monkeypatching Hapi)</li>
+<li> <a href="https://github.com/boneskull/hapi-coap-listener/issues/5">Blockwise transfers</a> (I have no idea what this even is)</li>
+</ol>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>© 2015 <a href="https://boneskull.com">Christopher Hiller</a>.  Licensed MIT.</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
