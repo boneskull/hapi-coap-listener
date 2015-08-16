@@ -11,21 +11,30 @@ $ npm install hapi-coap-listener
 ## Requirements
 
 - [io.js](https://iojs.org) >= v2.0.1
-- [Hapi](http://hapijs.com)
+- [Hapi](http://hapijs.com) >= v8.x
 
 ## Usage
 
 ```js
 let Hapi = require('hapi');
-let server = new Hapi.Server();
 
-// This listener is tagged with 'coap' for retrieval by server.select()
-let options = require('hapi-coap-listener')(server, {
-  address: 'localhost',
-  port: 5693
+// add your own defaults here
+let server = new Hapi.Server({
+  connections: {
+    coap: {
+      host: 'localhost'
+    }
+  }
 });
 
-// Note that you are not limited to a single connection! Serve HTTP too!  
+// connection properties uri, listener, autoListen (true), and tls (false) are 
+// generated for you
+let options = require('hapi-coap-listener')(server, {
+  port: 5693, // this is the port of the CoAP server
+  labels: ['coap', 'on-a-rope'] // default label is CoAP,
+  sock: null // define a socket path here if you wish; otherwise one is created
+});
+
 server.connection(options);
 
 server.start(function(err) {
@@ -35,6 +44,34 @@ server.start(function(err) {
   console.log(`Hapi listening on ${server.info.uri}`); 
 });
 ```
+
+## The How's and Why's
+
+[CoAP](https://en.wikipedia.org/wiki/Constrained_Application_Protocol), at first glance, is fairly similar to HTTP, with its notion of "options" ("headers") and URL paths.  Seems like a great fit for "web server" frameworks, doesn't it?
+
+Well, yes and no.
+ 
+The main problem arises from the fact that CoAP is bound to UDP instead of TCP.  This means it has no notion of a *connection*.  Hapi, and just about any other web server framework you will find, assumes you are listening with an HTTP server for HTTP traffic (if they didn't, they'd suck).  So, a web server will listen for the `connection` event to determine how to handle requests and responses from a client.  
+
+Without a connection, you can't run a web server.  CoAP has no connections.  This looks grim.
+
+But a cool thing about Hapi (and other frameworks as well, but I like Hapi) is that it gives you some wiggle room.  You can hand it a generic TCP server (think `net.Server()`) for a listener (see [`server.connection()`](http://hapijs.com/api#serverconnectionoptions)).  Even better, it doesn't need to bind to a port of a network interface, and can bind to a UNIX socket (or Windows pipe).  Hapi will listen on that TCP server for HTTP requests and reply with HTTP responses, even if it's pointing at some file in `/tmp/`.  Furthermore, it streamlines "faking" connections with [`server.inject()`](http://hapijs.com/api#serverinjectoptions-callback).
+
+This module gives Hapi a dummy TCP server acting as a proxy to a CoAP server.  Rough flow:
+
+- A client requests `coap://host:port/some/route`
+- CoAP server injects the request into the TCP server
+- Hapi dispatches the request and any routes, handlers, etc. are invoked
+- Upon reply, the callback function CoAPifies the response object, then issues a proper response to the client
+
+What happened to the UNIX socket?  Nothing.  We don't use it.  Then why not just forget about the TCP server, and inject into a HTTP listener?  Because separate connection allows you to make CoAP- or HTTP-only routes, configuration, or runtime data.  Indeed, as-of-yet unimplemented features (such as Observe mode) may further necessitate the schism.  You also may not be running a HTTP server.
+
+## TODO
+
+1.  Observe mode (multiple responses per request)
+2.  Multicast (possible?  no idea)
+3.  DTLS (probably impossible)
+4.  Blockwise transfers (I have no idea what this even is)
 
 ## License
 
