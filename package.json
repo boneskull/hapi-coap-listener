@@ -24,6 +24,7 @@
   ],
   "dependencies": {
     "coap": "mcollina/node-coap",
+    "lodash.defaults": "^3.1.2",
     "lodash.foreach": "^3.0.3",
     "lodash.isundefined": "^3.0.1",
     "tmp": "0.0.26"
