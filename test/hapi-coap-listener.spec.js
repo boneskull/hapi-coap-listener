@@ -15,7 +15,7 @@ describe('hapi-coap-listener', function() {
       }),
       inject: sandbox.stub().callsArgWith(1, {}),
       settings: {
-        connections: {}
+        app: {}
       }
     };
   });

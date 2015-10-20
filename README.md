@@ -22,7 +22,7 @@ let Hapi = require('hapi');
 
 // add your own defaults here
 let server = new Hapi.Server({
-  connections: {
+  app: {
     coap: {
       host: 'localhost'
     }
