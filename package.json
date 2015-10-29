@@ -47,6 +47,7 @@
     "jit-grunt": "^0.9.1",
     "load-grunt-config": "^0.17.1",
     "mocha": "^2.3.3",
+    "pre-commit": "^1.1.2",
     "sinon": "^1.17.1",
     "sinon-chai": "^2.8.0",
     "time-grunt": "^1.2.2"
