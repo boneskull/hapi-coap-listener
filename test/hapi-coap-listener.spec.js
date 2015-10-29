@@ -14,6 +14,7 @@ describe('hapi-coap-listener', function() {
         return this;
       }),
       inject: sandbox.stub().callsArgWith(1, {}),
+      after: sandbox.stub().callsArgWith(0, {}),
       settings: {
         app: {}
       }
@@ -26,7 +27,7 @@ describe('hapi-coap-listener', function() {
 
   describe('listener', function() {
     let nodeCoap = require('coap');
-    let listener = coapConnectionOpts.listener;
+    let createListener = coapConnectionOpts.createListener;
     let req;
     let res;
 
@@ -47,22 +48,22 @@ describe('hapi-coap-listener', function() {
 
     it('should create a CoAPServer', function() {
       sandbox.spy(nodeCoap, 'createServer');
-      listener(server);
+      createListener(server);
       expect(nodeCoap.createServer).to.have.been.calledOnce;
     });
 
     it('should create a TCP server', function() {
-      expect(listener(server)).to.be.instanceof(net.Server);
+      expect(createListener(server)).to.be.instanceof(net.Server);
     });
 
     it('should throw if no server instance passed', function() {
-      expect(listener).to.throw(Error);
+      expect(createListener).to.throw(Error);
     });
 
     describe('CoAPServer "close" event', function() {
       it('should also close the TCP server', function(done) {
         sandbox.spy(nodeCoap, 'createServer');
-        let tcpServer = listener(server);
+        let tcpServer = createListener(server);
         let coapServer = getCoAPServer();
         sandbox.restore(nodeCoap, 'createServer');
         expect(coapServer).to.be.instanceof(nodeCoap.createServer);
@@ -80,7 +81,7 @@ describe('hapi-coap-listener', function() {
     describe('TCP server "close" event', function() {
       it('should also close the CoAPServer', function(done) {
         sandbox.spy(nodeCoap, 'createServer');
-        let tcpServer = listener(server);
+        let tcpServer = createListener(server);
         let coapServer = getCoAPServer();
         sandbox.restore(nodeCoap, 'createServer');
         expect(coapServer).to.be.instanceof(nodeCoap.createServer);
@@ -101,7 +102,7 @@ describe('hapi-coap-listener', function() {
       beforeEach(function() {
         sandbox.stub(net.Server.prototype, 'emit');
         sandbox.spy(nodeCoap, 'createServer');
-        listener(server);
+        createListener(server);
         coapServer = getCoAPServer();
       });
 
@@ -116,19 +117,21 @@ describe('hapi-coap-listener', function() {
       });
     });
 
-    describe('listen() callback', function() {
+    describe('when proxy server listening', function() {
       beforeEach(function() {
         sandbox.spy(nodeCoap, 'createServer');
       });
 
-      it('should call CoAPServer.prototype.listen()', function() {
-        listener(server);
-        let coapServer = getCoAPServer();
-        expect(coapServer.listen).to.have.been.calledOnce;
+      it('should call CoAPServer.prototype.listen()', function(done) {
+        createListener(server).listen(function() {
+          let coapServer = getCoAPServer();
+          expect(coapServer.listen).to.have.been.calledOnce;
+          done();
+        });
       });
 
       it('should log something', function() {
-        listener(server);
+        createListener(server).listen();
         let coapServer = getCoAPServer();
         coapServer.emit('request', req, res);
         expect(server.log).to.have.been.called;
@@ -139,31 +142,11 @@ describe('hapi-coap-listener', function() {
   describe('createListener()', function() {
     beforeEach(function() {
       sandbox.stub(require('tmp'), 'tmpNameSync').returns('/some/path');
-      sandbox.stub(coapConnectionOpts, 'listener').returns({});
-    });
-
-    it('should call listener()', function() {
-      coapConnectionOpts(server);
-      expect(coapConnectionOpts.listener).to.have.been.calledOnce;
+      sandbox.stub(coapConnectionOpts, 'createListener').returns({});
     });
 
     it('should throw if no server instance passed', function() {
       expect(coapConnectionOpts).to.throw(Error);
-    });
-
-    it('should return a Hapi connection configuration object', function() {
-      expect(coapConnectionOpts(server, {
-        port: 1234
-      })).to.eql({
-        listener: {},
-        port: '/some/path',
-        labels: 'coap',
-        uri: 'coap://localhost:1234',
-        tls: false,
-        autoListen: true,
-        address: undefined,
-        host: 'localhost'
-      });
     });
   });
 });
