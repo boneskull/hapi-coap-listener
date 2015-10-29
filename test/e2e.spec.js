@@ -6,12 +6,8 @@ const getPort = require('get-port');
 
 describe(`with real server`, () => {
   it('should return a Hapi connection configuration object', function() {
-    console.log('hi');
-
     return getPort()
       .then(port => {
-        console.log('ho');
-
         const server = new Server({
           app: {
             coap: {
