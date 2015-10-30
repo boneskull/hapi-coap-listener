@@ -1,9 +1,7 @@
 language: node_js
 node_js:
-- iojs
-- 4.2
-- 4.1
 - 4.0
+- 5.0
 sudo: false
 script: npm test
 after_script:
