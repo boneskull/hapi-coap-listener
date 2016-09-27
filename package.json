@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "chai": "^3.4.0",
-    "chai-as-promised": "^5.1.0",
+    "chai-as-promised": "^6.0.0",
     "codeclimate-test-reporter": "^0.1.1",
     "eslint": "^1.7.2",
     "get-port": "^2.0.0",
